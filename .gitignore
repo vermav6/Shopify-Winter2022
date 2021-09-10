@@ -1,3 +1,5 @@
 
 back-end/functions/.runtimeconfig.json
 back-end/storage.rules
+node_modules
+.env

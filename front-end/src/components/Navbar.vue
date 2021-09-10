@@ -1,0 +1,70 @@
+<template>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light beige">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">ImagIn</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <router-link class="nav-link" to="/">Home</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/upload">Upload</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/my">My images</router-link>
+          </li>
+        </ul>
+        <form class="d-flex">
+          <input
+            class="form-control me-2"
+            type="search"
+            placeholder="Search Categories"
+            aria-label="Search"
+          />
+          <button class="btn btn-outline-success" type="submit">Upload</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+</template>
+
+<script>
+export default {
+  name: "Navbar",
+  data() {
+    return {};
+  },
+  methods: {},
+};
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+.navbar {
+  min-height: 70px !important;
+}
+
+.beige {
+  background-color: rgb(251, 247, 237) !important;
+}
+
+.nav-link {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.router-link-active {
+  color: rgb(0, 76, 63) !important;
+}
+</style>
