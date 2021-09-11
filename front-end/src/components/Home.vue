@@ -9,7 +9,7 @@
         <div class="card text-white bg-dark h-100 text-center">
           <img
             class="card-img-top"
-            style="max-height: 50vh; object-fit: contain; margin-top: 30px"
+            style="max-height: 50vh; object-fit: contain"
             alt="..."
             src="https://firebasestorage.googleapis.com/v0/b/shopify-winter2022.appspot.com/o/1631246904790?alt=media&token=bcb2cafb-1114-4a8d-a2d2-2453ea5b6e01"
           />
@@ -53,5 +53,10 @@ li {
 }
 a {
   color: #42b983;
+}
+
+#cardHolder {
+  margin-left: 20px;
+  margin-right: 20px;
 }
 </style>
