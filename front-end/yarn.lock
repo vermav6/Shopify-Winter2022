@@ -1887,7 +1887,7 @@
   optionalDependencies:
     prettier "^1.18.2"
 
-"@vue/devtools-api@^6.0.0-beta.14":
+"@vue/devtools-api@^6.0.0-beta.11", "@vue/devtools-api@^6.0.0-beta.14":
   version "6.0.0-beta.15"
   resolved "https://registry.yarnpkg.com/@vue/devtools-api/-/devtools-api-6.0.0-beta.15.tgz#ad7cb384e062f165bcf9c83732125bffbc2ad83d"
   integrity sha512-quBx4Jjpexo6KDiNUGFr/zF/2A4srKM9S9v2uHgMXSU//hjgq1eGzqkIFql8T9gfX5ZaVOUzYBP3jIdIR3PKIA==
@@ -8997,6 +8997,11 @@ vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
 
+vue-toastification@^2.0.0-rc.1:
+  version "2.0.0-rc.1"
+  resolved "https://registry.yarnpkg.com/vue-toastification/-/vue-toastification-2.0.0-rc.1.tgz#6a994c19635a493eec0ee290e84a966e07c709d2"
+  integrity sha512-hjauv/FyesNZdwcr5m1SCyvu1JmlB+Ts5bTptDLDmsYYlj6Oqv8NYakiElpCF+Abwkn9J/AChh6FwkTL1HOb7Q==
+
 vue3-lazyload@^0.2.2-beta:
   version "0.2.2-beta"
   resolved "https://registry.yarnpkg.com/vue3-lazyload/-/vue3-lazyload-0.2.2-beta.tgz#c75df1a8553b60fbfd8324d083cb0e71c94dd26d"
@@ -9010,6 +9015,13 @@ vue@^3.0.0:
     "@vue/compiler-dom" "3.2.10"
     "@vue/runtime-dom" "3.2.10"
     "@vue/shared" "3.2.10"
+
+vuex@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/vuex/-/vuex-4.0.2.tgz#f896dbd5bf2a0e963f00c67e9b610de749ccacc9"
+  integrity sha512-M6r8uxELjZIK8kTKDGgZTYX/ahzblnzC4isU1tpmEuOIIKmV+TRdc+H4s8ds2NuZ7wpUTdGRzJRtoj+lI+pc0Q==
+  dependencies:
+    "@vue/devtools-api" "^6.0.0-beta.11"
 
 watchpack-chokidar2@^2.0.1:
   version "2.0.1"

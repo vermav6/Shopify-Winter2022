@@ -19,20 +19,38 @@
             <router-link class="nav-link" to="/">Home</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/upload">Upload</router-link>
+            <router-link
+              class="nav-link"
+              to="/upload"
+              v-if="this.$store.state.loggedIn"
+              >Upload</router-link
+            >
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/my">My images</router-link>
+            <router-link
+              class="nav-link"
+              to="/gallery"
+              v-if="this.$store.state.loggedIn"
+              >Gallery</router-link
+            >
+          </li>
+          <li class="nav-item">
+            <router-link
+              class="nav-link"
+              to="/my"
+              v-if="this.$store.state.loggedIn"
+              >My images</router-link
+            >
           </li>
         </ul>
-        <form class="d-flex">
+        <form class="d-flex" v-if="this.$store.state.loggedIn">
           <input
             class="form-control me-2"
             type="search"
             placeholder="Search Categories"
             aria-label="Search"
           />
-          <button class="btn btn-outline-success" type="submit">Upload</button>
+          <button class="btn btn-outline-success" type="submit">Logout</button>
         </form>
       </div>
     </div>

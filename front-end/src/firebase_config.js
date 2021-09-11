@@ -1,6 +1,9 @@
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 import { connectStorageEmulator } from "firebase/storage";
+import {
+  getAuth,
+} from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_API_KEY,
@@ -10,8 +13,8 @@ const firebaseConfig = {
   messagingSenderId: process.env.VUE_APP_MESSAGING_SENDER_ID,
   appId: process.env.VUE_APP_ID,
 };
-
 const firebaseApp = initializeApp(firebaseConfig);
+export const auth = getAuth(firebaseApp);
 export const storage = getStorage(firebaseApp)
 if(window.location.href.includes('emulated')) {
   document.title = "emulated"

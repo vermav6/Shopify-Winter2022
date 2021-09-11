@@ -7,10 +7,20 @@
 
 <script>
 import Navbar from "@/components/Navbar.vue";
+import { auth } from "@/firebase_config.js";
+
 export default {
   name: "App",
   components: {
     Navbar,
+  },
+  created() {
+    const userData = auth.currentUser;
+    console.log(userData);
+    if (userData) {
+      this.$store.state.loggedIn = true;
+      this.$store.state.userData = userData;
+    }
   },
 };
 </script>
@@ -21,7 +31,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: white;
 }
 
 .navbar-top {
