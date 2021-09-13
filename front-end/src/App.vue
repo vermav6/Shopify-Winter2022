@@ -7,20 +7,11 @@
 
 <script>
 import Navbar from "@/components/Navbar.vue";
-import { auth } from "@/firebase_config.js";
 
 export default {
   name: "App",
   components: {
     Navbar,
-  },
-  created() {
-    const userData = auth.currentUser;
-    console.log(userData);
-    if (userData) {
-      this.$store.state.loggedIn = true;
-      this.$store.state.userData = userData;
-    }
   },
 };
 </script>

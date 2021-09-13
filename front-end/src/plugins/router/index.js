@@ -1,17 +1,14 @@
 import Home from "@/components/Home.vue"
 import Upload from "@/components/Upload.vue"
-import Gallery from "@/components/Gallery.vue"
 import {createRouter, createWebHistory } from "vue-router";
 // import {userDetails} from "@/firebase_config.js";
 import { store } from "../vuex";
 import { useToast } from "vue-toastification";
+import { auth } from "@/firebase_config.js";
 const toast = useToast();
 
 const routes = [
   { path: '/', component: Home },
-  { path: '/gallery', component: Gallery,  meta: {
-    authRequired: true,
-},},
 { path: '/upload', component: Upload,  meta: {
   authRequired: true,
 },},
@@ -25,13 +22,22 @@ export const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.authRequired)) {
-      if (store.state.loggedIn) {
+    console.log(auth.currentUser)
+      if(!store.state.loggedIn){
+        setTimeout(function() {
+          if(auth.currentUser){
+            next();
+          }
+          else{
+            toast.error('You must be logged in to see this page');
+            next({
+                path: '/',
+            });
+          }
+        }, 500);  
+      }
+      else {
           next();
-      } else {
-          toast.error('You must be logged in to see this page');
-          next({
-              path: '/',
-          });
       }
   } else {
       next();

@@ -17,8 +17,13 @@
       <button class="btn btn-info" type="submit" v-on:click="register">
         Register</button
       ><br /><br />
-      <button class="btn btn-warning" type="submit">
-        Continue Without Logging In
+      <button
+        class="btn btn-warning"
+        v-on:click="this.$store.state.randomGalleryState = true"
+        type="submit"
+        v-if="!this.$store.state.randomGalleryState"
+      >
+        View Random Gallery Logging In
       </button>
     </form>
   </div>
@@ -73,17 +78,11 @@ export default {
         return;
       }
       createUserWithEmailAndPassword(auth, this.email, this.password)
-        .then((userCredential) => {
-          // Signed in
-          const user = userCredential.user;
-          alert("Registered" + user);
-          // ...
-        })
+        .then(() => {})
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
           console.log(errorCode, errorMessage);
-          // ..
         });
     },
     signIn() {
@@ -91,20 +90,11 @@ export default {
         return;
       }
       signInWithEmailAndPassword(auth, this.email, this.password)
-        .then((userCredential) => {
-          // Signed in
-          const user = userCredential.user;
-          this.$store.state.loggedIn = true;
-          this.$store.state.userData = auth.currentUser;
-          console.log(user);
-          console.log(auth.currentUser);
-          this.$router.push("/gallery");
-          // ...
-        })
+        .then(() => {})
         .catch((error) => {
           const errorCode = error.code;
-          //   const errorMessage = error.message;
-          //   console.log(errorCode);
+          // const errorMessage = error.message;
+          console.log(errorCode);
           //   if (errorCode == "auth/invalid-email") {
           if (errorCode == "auth/invalid-email") {
             toast.update(
@@ -126,6 +116,17 @@ export default {
               },
               true
             );
+          } else if (errorCode == "auth/wrong-password") {
+            toast.update(
+              "incorrectPassword",
+              {
+                content:
+                  "The password you have entered is incorrect. Please try again",
+                options: { type: "error", timeout: 3500 },
+              },
+              true
+            );
+            this.password = "";
           }
           return;
         });

@@ -16,7 +16,13 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <router-link class="nav-link" to="/">Home</router-link>
+            <router-link
+              class="nav-link"
+              to="/"
+              v-if="this.$store.state.loggedIn"
+              >Gallery</router-link
+            >
+            <router-link class="nav-link" to="/" v-else>Home</router-link>
           </li>
           <li class="nav-item">
             <router-link
@@ -24,14 +30,6 @@
               to="/upload"
               v-if="this.$store.state.loggedIn"
               >Upload</router-link
-            >
-          </li>
-          <li class="nav-item">
-            <router-link
-              class="nav-link"
-              to="/gallery"
-              v-if="this.$store.state.loggedIn"
-              >Gallery</router-link
             >
           </li>
           <li class="nav-item">
@@ -50,7 +48,13 @@
             placeholder="Search Categories"
             aria-label="Search"
           />
-          <button class="btn btn-outline-success" type="submit">Logout</button>
+          <button
+            class="btn btn-outline-success"
+            type="submit"
+            v-on:click="signOut()"
+          >
+            Logout
+          </button>
         </form>
       </div>
     </div>
@@ -58,12 +62,30 @@
 </template>
 
 <script>
+import { signOut } from "firebase/auth";
+import { auth } from "@/firebase_config.js";
+
 export default {
   name: "Navbar",
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    signOut() {
+      signOut(auth)
+        .then(() => {
+          // Sign-out successful.
+          this.$store.state.loggedIn = false;
+          this.$store.state.userData = {};
+          this.$router.push("/");
+        })
+        .catch(() => {
+          this.$store.state.loggedIn = false;
+          this.$store.state.userData = {};
+          this.$router.push("/");
+        });
+    },
+  },
 };
 </script>
 

@@ -4,7 +4,9 @@ export const store = createStore({
     state () {
       return {
         loggedIn: false,
-        userData: {}
+        randomGalleryState: false,
+        userData: {},
+        gallery: []
       }
     }
   })
