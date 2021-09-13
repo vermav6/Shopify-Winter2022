@@ -8,6 +8,9 @@
         @change="handleFileChange($event)"
         name="filename"
       />
+      <br />
+      <input v-model="fileName" placeholder="Enter File Name" />
+      <br />
       <input @click="upload()" type="submit" />
       <br />
       <button @click="clear()" v-if="isFileSelected">Unselect Image</button>
@@ -26,6 +29,7 @@ export default {
     return {
       submittedFileLocalURL: null,
       uploadedFile: null,
+      imageName: "",
     };
   },
   computed: {
@@ -35,12 +39,20 @@ export default {
   },
   methods: {
     upload() {
-      const storageRef = ref(storage, Date.now().toString());
+      const storageRef = ref(
+        storage,
+        `${this.$store.state.userData.uid}/${Date.now().toString()}`
+      );
       if (this.uploadedFile && this.submittedFileLocalURL) {
-        uploadBytes(storageRef, this.uploadedFile).then((snapshot) => {
-          alert("Uploaded a blob or file!");
-          console.log(snapshot);
-        });
+        const metadata = {
+          customMetadata: { imageName: "test", classification_status: 0 },
+        };
+        uploadBytes(storageRef, this.uploadedFile, metadata).then(
+          (snapshot) => {
+            alert("Uploaded a blob or file!");
+            console.log(snapshot);
+          }
+        );
       } else {
         alert("Please select a file to upload");
       }
@@ -52,6 +64,8 @@ export default {
     handleFileChange(evt) {
       this.uploadedFile = evt.target.files[0];
       this.submittedFileLocalURL = URL.createObjectURL(evt.target.files[0]);
+      console.log(evt.target.files[0]);
+      this.fileName = evt.target.files[0].name;
       // evt.target.files contains Array-like FileList object
     },
   },

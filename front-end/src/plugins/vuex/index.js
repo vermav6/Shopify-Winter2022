@@ -6,7 +6,7 @@ export const store = createStore({
         loggedIn: false,
         randomGalleryState: false,
         userData: {},
-        gallery: []
+        gallery: {}
       }
     }
   })

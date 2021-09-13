@@ -19,7 +19,7 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 export const auth = getAuth(firebaseApp);
 export const storage = getStorage(firebaseApp)
-if(window.location.href.includes('emulated')) {
+if(window.location.href.includes('localhost')) {
   document.title = "emulated"
   connectStorageEmulator(storage, "localhost", 9199);
   connectAuthEmulator(auth, "http://localhost:9099");
@@ -28,38 +28,48 @@ auth.onAuthStateChanged(function(user) {
   if (user != null) {
     store.state.loggedIn = true;
     store.state.userData = user;
-    getFromStorage();
+    // console.log(user);
+    // getAllImagesFromStorage();
  }
  else{
   store.state.loggedIn = false;
  }
 });
 
-async function getFromStorage() {
-  const listRef = ref(storage, '');
-  // const final=[];
-  // const old = store.state.gallery;
-  // Fetch the first page of 100.
+export async function getAllImagesFromStorage() {
+  const listRef = ref(storage);
   const firstPage = await list(listRef, { maxResults: 100 });
-  for (const item of firstPage.items) {
-    const imageRef = ref(storage, item.fullPath);
-    const url = await getImageUrl(item.fullPath);
-    const metadata = await getMetadata(imageRef);
-    const tags = metadata.customMetadata.classifications.split(",")
-    // final.push({
-    //   title: `Image: ${item}`,
-    //   tags:tags,
-    //   uploaded: "abc",
-    //   img: url,
-    // });
-    store.state.gallery.push({
-        title: `Image: ${item}`,
-        tags:tags,
-        uploaded: "abc",
-        img: url,
-      });
-  }
-
+  console.log(firstPage)
+  for (const item of firstPage.prefixes) {
+    const bucketRef = ref(storage, item.fullPath);
+    const bucketImages = await list(bucketRef, { maxResults: 100 });
+    console.log(bucketImages);
+    for (const image of bucketImages.items) {
+      const imageAlreadyExists = store.state.gallery[image.fullPath] != null;
+      const imageRef = ref(storage, image.fullPath);
+      if(!imageAlreadyExists || store.state.gallery[image.fullPath].classification_status==0){
+      if(!imageAlreadyExists){
+        store.state.gallery[image.fullPath]={}
+      }
+        const metadata = await getMetadata(imageRef);
+      store.state.gallery[image.fullPath]["classification_status"]=metadata.customMetadata.classification_status;
+      let tags=[];
+      if(metadata.customMetadata.classification_status == 0){
+        tags=["Image is being classified"];  
+      }
+      else if(metadata.customMetadata.classification_status == 2){
+        tags=["Image could not be classified"];  
+      }
+      else{
+      tags = metadata.customMetadata.classifications.split(",")}
+      store.state.gallery[image.fullPath]["tags"]=tags;
+      store.state.gallery[image.fullPath]["title"]=metadata.customMetadata.imageName;
+      store.state.gallery[image.fullPath]["uploaded"]=metadata.updated;
+      if(!store.state.gallery[image.fullPath]["img"]){
+        store.state.gallery[image.fullPath]["img"]=  await getImageUrl(image.fullPath);
+      }
+    }
+  }}
 }
 
 async function getImageUrl(path){

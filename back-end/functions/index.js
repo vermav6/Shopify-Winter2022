@@ -12,16 +12,19 @@ exports.classifyUpload = functions.storage
     .object()
     .onFinalize(async (object) => {
       const storageRef = admin.storage().bucket(object.bucket);
-      const name = object.name;
-      const file = storageRef.file(name);
+      const fileName = object.name;
+      const file = storageRef.file(fileName);
+      const metadata = object.metadata;
       try {
         const url = await file.getSignedUrl({
           action: "read",
           expires: "03-09-2491",
         });
-        await getImageConcept(url, storageRef, name);
+        await getImageConcept(url, storageRef, fileName, metadata.imageName);
       } catch (error) {
-        await classificationFailedMetadataUpdate(storageRef, name);
+        await
+        classificationFailedMetadataUpdate(
+            storageRef, fileName, metadata.imageName);
       }
       return;
     });
@@ -29,9 +32,10 @@ exports.classifyUpload = functions.storage
 /**
  * @param {string} url
  * @param {Bucket} storageRef
- * @param {string} name
+ * @param {string} fileName
+ *  @param {string} imageName
  */
-async function getImageConcept(url, storageRef, name) {
+async function getImageConcept(url, storageRef, fileName, imageName) {
   // eslint-disable-next-line new-cap
   stub.PostModelOutputs(
       {
@@ -42,7 +46,8 @@ async function getImageConcept(url, storageRef, name) {
       async (err, response) => {
         if (err || response.status.code !== 10000) {
           functions.logger.log(err || response.text);
-          await classificationFailedMetadataUpdate(storageRef, name);
+          await
+          classificationFailedMetadataUpdate(storageRef, fileName, imageName);
           return;
         }
 
@@ -55,11 +60,12 @@ async function getImageConcept(url, storageRef, name) {
         final = final.toString();
         const metadata = {
           metadata: {
+            imageName: imageName,
             classification_status: 1,
             classifications: final,
           },
         };
-        await updateFileMetadata(storageRef, name, metadata);
+        await updateFileMetadata(storageRef, fileName, metadata);
         return;
       },
   );
@@ -67,17 +73,19 @@ async function getImageConcept(url, storageRef, name) {
 
 /**
  * @param {Bucket} storageRef
- * @param {string} name
- * @param {Object} metadata
+ * @param {string} fileName
+ * @param {string} imageName
  */
-async function classificationFailedMetadataUpdate(storageRef, name) {
+async function
+classificationFailedMetadataUpdate(storageRef, fileName, imageName) {
   try {
     const metadata = {
       metadata: {
+        imageName: imageName,
         classification_status: 2,
       },
     };
-    await storageRef.file(name).setMetadata(metadata);
+    await updateFileMetadata(storageRef, fileName, metadata);
     return null;
   } catch (error) {
     functions.logger.log(error);
@@ -87,12 +95,12 @@ async function classificationFailedMetadataUpdate(storageRef, name) {
 
 /**
  * @param {Bucket} storageRef
- * @param {string} name
+ * @param {string} fileName
  * @param {Object} metadata
  */
-async function updateFileMetadata(storageRef, name, metadata) {
+async function updateFileMetadata(storageRef, fileName, metadata) {
   try {
-    await storageRef.file(name).setMetadata(metadata);
+    await storageRef.file(fileName).setMetadata(metadata);
     return null;
   } catch (error) {
     functions.logger.log(error);

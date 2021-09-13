@@ -1,58 +1,59 @@
 <template>
   <div>
     <Login v-show="!this.$store.state.loggedIn" />
-    <div :key="componentKey">
-      <div
-        id="myModal"
-        class="modal"
-        v-if="modalURL != null"
-        v-on:click="modalURL = null"
-      >
-        <!-- Modal content -->
+    <button
+      class="btn btn-warning"
+      v-on:click="generateSampleImages()"
+      type="submit"
+      v-if="
+        !this.$store.state.randomGalleryState && !this.$store.state.loggedIn
+      "
+    >
+      View Random Gallery Logging In
+    </button>
+    <div
+      v-show="
+        this.$store.state.loggedIn || this.$store.state.randomGalleryState
+      "
+    >
+      <div class="modal" v-if="modalURL != null" v-on:click="modalURL = null">
         <div class="modal-content">
           <span class="close">&times;</span>
-          <img v-lazy="modalURL" />
+          <img class="modalImg" v-lazy="modalURL" />
         </div>
       </div>
-      <masonry-wall
-        class="mason"
-        :items="this.$store.state.gallery"
-        :column-width="250"
-        :padding="14"
-      >
-        <template #default="{ item }">
-          <div class="card" v-on:click="openModal(item)">
-            <img v-lazy="item.img" />
-            <span style="font-size: 20px">{{ item.title }}</span>
-            <br />
-            <span>
-              <span
-                class="badge bg-success"
-                style="margin-right: 5px"
-                v-for="tag in item.tags"
-                v-bind:key="tag"
-              >
-                {{ tag }}
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 mason">
+        <div class="col" v-for="item in this.$store.state.gallery" :key="item">
+          <div class="card h-100" v-on:click="openModal(item)">
+            <img v-lazy="item.img" class="card-img-top cardImg" alt="..." />
+            <div class="card-body">
+              <h5 class="card-title">{{ item.title }}</h5>
+              <span>
+                <span
+                  class="badge bg-success"
+                  style="margin-right: 5px"
+                  v-for="tag in item.tags"
+                  v-bind:key="tag"
+                >
+                  {{ tag }}
+                </span>
               </span>
-            </span>
-            <hr style="padding: none !important; margin: none !important" />
-            <span
-              style="
-                padding: none !important;
-                margin-top: none !important;
-                padding-bottom: 10px !important;
-              "
-              >{{ item.uploaded }}</span
-            >
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">{{
+                getDateFormat(item.uploaded)
+              }}</small>
+            </div>
           </div>
-        </template>
-      </masonry-wall>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import Login from "@/components/Login";
+import { getAllImagesFromStorage } from "@/firebase_config.js";
 
 export default {
   components: { Login },
@@ -60,50 +61,64 @@ export default {
     return {
       modalURL: null,
       componentKey: 0,
+      updateInterval: null,
     };
   },
+  destroy() {
+    clearInterval(this.updateInterval);
+  },
   created() {
-    if (!this.$store.state.loggedIn) {
-      const items = [];
-      for (let index = 0; index < 10; index++) {
-        let dimension = "1200/1250";
-        if (index % 2) {
-          dimension = `1200/${this.getRndInteger(300, 1000)}`;
-        }
-        const rtag = [];
-        for (let index = 0; index < 5; index++) {
-          rtag.push(`Tag ${index}`);
-        }
-        const currentdate = new Date();
-        let datetime =
-          "Uploaded: " +
-          currentdate.getDate() +
-          "/" +
-          (currentdate.getMonth() + 1) +
-          "/" +
-          currentdate.getFullYear() +
-          " @ " +
-          currentdate.getHours() +
-          ":" +
-          currentdate.getMinutes() +
-          ":" +
-          currentdate.getSeconds();
-        items.push({
-          title: `Image: ${index}`,
-          tags: rtag,
-          uploaded: datetime,
-          img: `https://random.imagecdn.app/${dimension}?${index}`,
-        });
-      }
-      this.$store.state.gallery = items;
-    }
+    this.updateInterval = setInterval(function () {
+      // method to be executed;
+      getAllImagesFromStorage();
+    }, 5000);
   },
   methods: {
+    generateSampleImages() {
+      if (!this.$store.state.loggedIn) {
+        this.$store.state.randomGalleryState = true;
+        const items = [];
+        for (let index = 0; index < 10; index++) {
+          let dimension = "1200/1250";
+          if (index % 2) {
+            dimension = `1200/${this.getRndInteger(300, 1000)}`;
+          }
+          const rtag = [];
+          for (let index = 0; index < 5; index++) {
+            rtag.push(`Tag ${index}`);
+          }
+          items.push({
+            title: `Image: ${index}`,
+            tags: rtag,
+            uploaded: new Date(),
+            img: `https://random.imagecdn.app/${dimension}?${index}`,
+          });
+        }
+        this.$store.state.gallery = items;
+      }
+    },
     openModal(item) {
       this.modalURL = item.img;
     },
     getRndInteger(min, max) {
       return Math.floor(Math.random() * (max - min)) + min;
+    },
+    getDateFormat(currentdate) {
+      // return (
+      //   "Uploaded: " +
+      //   currentdate.getDate() +
+      //   "/" +
+      //   (currentdate.getMonth() + 1) +
+      //   "/" +
+      //   currentdate.getFullYear() +
+      //   " @ " +
+      //   currentdate.getHours() +
+      //   ":" +
+      //   currentdate.getMinutes() +
+      //   ":" +
+      //   currentdate.getSeconds()
+      // );
+      return currentdate.toString();
     },
   },
 };
@@ -123,15 +138,21 @@ export default {
   box-shadow: rgba(0, 0, 0, 0.22) 0px 19px 43px;
   transform: translate3d(0px, -1px, 0px);
 }
-img {
-  max-width: 100% !important;
-  max-height: 500px !important;
+.cardImg {
+  /* width: 100% !important; */
+  height: 400px !important;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   object-fit: contain;
 }
+
+.modalImg {
+  max-height: 90%;
+  object-fit: contain;
+}
 .mason {
-  padding: 40px !important;
+  margin: 30px !important;
+  padding-bottom: 40px !important;
 }
 
 .modal {
@@ -140,19 +161,25 @@ img {
   z-index: 1; /* Sit on top */
   left: 0;
   top: 0;
+  bottom: 0;
+  right: 0;
   width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
+  height: 100vh; /* Full height */
+  overflow: none !important;
   background-color: rgb(0, 0, 0); /* Fallback color */
   background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  cursor: pointer;
 }
 
 /* Modal Content/Box */
 .modal-content {
+  position: absolute; /* Stay in place */
   background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
+  top: 2vh;
   padding: 20px;
   border: 1px solid #888;
+  left: 10%;
+  height: 95%;
   width: 80%; /* Could be more or less, depending on screen size */
 }
 

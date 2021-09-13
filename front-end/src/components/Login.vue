@@ -17,14 +17,6 @@
       <button class="btn btn-info" type="submit" v-on:click="register">
         Register</button
       ><br /><br />
-      <button
-        class="btn btn-warning"
-        v-on:click="this.$store.state.randomGalleryState = true"
-        type="submit"
-        v-if="!this.$store.state.randomGalleryState"
-      >
-        View Random Gallery Logging In
-      </button>
     </form>
   </div>
 </template>
