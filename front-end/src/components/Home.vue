@@ -40,9 +40,7 @@
               </span>
             </div>
             <div class="card-footer">
-              <small class="text-muted">{{
-                getDateFormat(item.uploaded)
-              }}</small>
+              <small class="text-muted">{{ item.uploaded }}</small>
             </div>
           </div>
         </div>
@@ -68,16 +66,17 @@ export default {
     clearInterval(this.updateInterval);
   },
   created() {
+    getAllImagesFromStorage();
     this.updateInterval = setInterval(function () {
       // method to be executed;
       getAllImagesFromStorage();
-    }, 5000);
+    }, 10000);
   },
   methods: {
     generateSampleImages() {
       if (!this.$store.state.loggedIn) {
+        this.$store.state.gallery = {};
         this.$store.state.randomGalleryState = true;
-        const items = [];
         for (let index = 0; index < 10; index++) {
           let dimension = "1200/1250";
           if (index % 2) {
@@ -87,14 +86,14 @@ export default {
           for (let index = 0; index < 5; index++) {
             rtag.push(`Tag ${index}`);
           }
-          items.push({
-            title: `Image: ${index}`,
-            tags: rtag,
-            uploaded: new Date(),
-            img: `https://random.imagecdn.app/${dimension}?${index}`,
-          });
+          this.$store.state.gallery[index] = {};
+          this.$store.state.gallery[index]["title"] = `Image: ${index}`;
+          this.$store.state.gallery[index]["tags"] = rtag;
+          this.$store.state.gallery[index]["uploaded"] = new Date();
+          this.$store.state.gallery[index][
+            "img"
+          ] = `https://random.imagecdn.app/${dimension}?${index}`;
         }
-        this.$store.state.gallery = items;
       }
     },
     openModal(item) {
@@ -102,23 +101,6 @@ export default {
     },
     getRndInteger(min, max) {
       return Math.floor(Math.random() * (max - min)) + min;
-    },
-    getDateFormat(currentdate) {
-      // return (
-      //   "Uploaded: " +
-      //   currentdate.getDate() +
-      //   "/" +
-      //   (currentdate.getMonth() + 1) +
-      //   "/" +
-      //   currentdate.getFullYear() +
-      //   " @ " +
-      //   currentdate.getHours() +
-      //   ":" +
-      //   currentdate.getMinutes() +
-      //   ":" +
-      //   currentdate.getSeconds()
-      // );
-      return currentdate.toString();
     },
   },
 };

@@ -28,8 +28,8 @@ auth.onAuthStateChanged(function(user) {
   if (user != null) {
     store.state.loggedIn = true;
     store.state.userData = user;
-    // console.log(user);
-    // getAllImagesFromStorage();
+    store.state.gallery = {};
+    getAllImagesFromStorage();
  }
  else{
   store.state.loggedIn = false;
@@ -39,11 +39,9 @@ auth.onAuthStateChanged(function(user) {
 export async function getAllImagesFromStorage() {
   const listRef = ref(storage);
   const firstPage = await list(listRef, { maxResults: 100 });
-  console.log(firstPage)
   for (const item of firstPage.prefixes) {
     const bucketRef = ref(storage, item.fullPath);
     const bucketImages = await list(bucketRef, { maxResults: 100 });
-    console.log(bucketImages);
     for (const image of bucketImages.items) {
       const imageAlreadyExists = store.state.gallery[image.fullPath] != null;
       const imageRef = ref(storage, image.fullPath);
@@ -51,7 +49,7 @@ export async function getAllImagesFromStorage() {
       if(!imageAlreadyExists){
         store.state.gallery[image.fullPath]={}
       }
-        const metadata = await getMetadata(imageRef);
+      const metadata = await getMetadata(imageRef);
       store.state.gallery[image.fullPath]["classification_status"]=metadata.customMetadata.classification_status;
       let tags=[];
       if(metadata.customMetadata.classification_status == 0){
@@ -64,7 +62,7 @@ export async function getAllImagesFromStorage() {
       tags = metadata.customMetadata.classifications.split(",")}
       store.state.gallery[image.fullPath]["tags"]=tags;
       store.state.gallery[image.fullPath]["title"]=metadata.customMetadata.imageName;
-      store.state.gallery[image.fullPath]["uploaded"]=metadata.updated;
+      store.state.gallery[image.fullPath]["uploaded"]=new Date(metadata.updated);
       if(!store.state.gallery[image.fullPath]["img"]){
         store.state.gallery[image.fullPath]["img"]=  await getImageUrl(image.fullPath);
       }
