@@ -22,17 +22,28 @@
           <img class="modalImg" v-lazy="modalURL" />
         </div>
       </div>
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 mason">
-        <div class="col" v-for="item in this.$store.state.gallery" :key="item">
+      <div
+        class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 mason"
+        v-if="Object.keys(this.$store.state.myImages).length != 0"
+      >
+        <div
+          class="col"
+          v-for="item in Object.keys(this.$store.state.myImages)"
+          :key="item"
+        >
           <div class="card h-100" v-on:click="openModal(item)">
-            <img v-lazy="item.img" class="card-img-top cardImg" alt="..." />
+            <img
+              v-lazy="getImgDetails(item).img"
+              class="card-img-top cardImg"
+              alt="..."
+            />
             <div class="card-body">
-              <h5 class="card-title">{{ item.title }}</h5>
+              <h5 class="card-title">{{ getImgDetails(item).title }}</h5>
               <span>
                 <span
                   class="badge bg-success"
                   style="margin-right: 5px"
-                  v-for="tag in item.tags"
+                  v-for="tag in getImgDetails(item).tags"
                   v-bind:key="tag"
                 >
                   {{ tag }}
@@ -40,18 +51,21 @@
               </span>
             </div>
             <div class="card-footer">
-              <small class="text-muted">{{ item.uploaded }}</small>
+              <small class="text-muted">{{
+                getImgDetails(item).uploaded
+              }}</small>
             </div>
           </div>
         </div>
       </div>
+      <div v-else>Please upload an image to see it here</div>
     </div>
   </div>
 </template>
 
 <script>
 import Login from "@/components/Login";
-import { getAllImagesFromStorage } from "@/firebase_config.js";
+import { getMyImagesFromStorage } from "@/firebase_config.js";
 
 export default {
   components: { Login },
@@ -66,13 +80,19 @@ export default {
     clearInterval(this.updateInterval);
   },
   created() {
-    getAllImagesFromStorage();
+    getMyImagesFromStorage();
     this.updateInterval = setInterval(function () {
       // method to be executed;
-      getAllImagesFromStorage();
+      getMyImagesFromStorage();
     }, 10000);
   },
   methods: {
+    getImgDetails(item) {
+      return this.$store.state.gallery[item];
+    },
+    isMyImage(item) {
+      return this.$store.state.myImages[item];
+    },
     generateSampleImages() {
       if (!this.$store.state.loggedIn) {
         this.$store.state.gallery = {};

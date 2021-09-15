@@ -9,7 +9,7 @@
         name="filename"
       />
       <br />
-      <input v-model="fileName" placeholder="Enter File Name" />
+      <input v-model="imageName" placeholder="Enter Image Name" />
       <br />
       <input @click="upload()" type="submit" />
       <br />
@@ -45,7 +45,10 @@ export default {
       );
       if (this.uploadedFile && this.submittedFileLocalURL) {
         const metadata = {
-          customMetadata: { imageName: "test", classification_status: 0 },
+          customMetadata: {
+            imageName: this.imageName,
+            classification_status: 0,
+          },
         };
         uploadBytes(storageRef, this.uploadedFile, metadata).then(
           (snapshot) => {
@@ -64,9 +67,7 @@ export default {
     handleFileChange(evt) {
       this.uploadedFile = evt.target.files[0];
       this.submittedFileLocalURL = URL.createObjectURL(evt.target.files[0]);
-      console.log(evt.target.files[0]);
-      this.fileName = evt.target.files[0].name;
-      // evt.target.files contains Array-like FileList object
+      this.imageName = evt.target.files[0].name;
     },
   },
 };

@@ -1,5 +1,6 @@
 import Home from "@/components/Home.vue";
 import Upload from "@/components/Upload.vue";
+import My from "@/components/MyImages.vue";
 import { createRouter, createWebHistory } from "vue-router";
 // import {userDetails} from "@/firebase_config.js";
 import { store } from "../vuex";
@@ -16,6 +17,13 @@ const routes = [
       authRequired: true,
     },
   },
+  {
+    path: "/my",
+    component: My,
+    meta: {
+      authRequired: true,
+    },
+  },
   { path: "/:catchAll(.*)", component: Home },
 ];
 
@@ -26,7 +34,6 @@ export const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.authRequired)) {
-    console.log(auth.currentUser);
     if (!store.state.loggedIn) {
       setTimeout(function() {
         if (auth.currentUser) {
