@@ -49,13 +49,21 @@
         </div>
       </div>
     </div>
-    <div v-else>Please upload an image to see it here</div>
+    <div v-else>
+      <br />Please upload an image to see it here<br />
+      <br />
+      <button class="btn btn-warning" @click="$router.push('/upload')">
+        Go to upload
+      </button>
+    </div>
   </div>
 </template>
 
 <script>
 import { storage, getMyImagesFromStorage } from "@/firebase_config.js";
 import { ref, deleteObject } from "firebase/storage";
+import { useToast } from "vue-toastification";
+const toast = useToast();
 
 export default {
   data() {
@@ -80,7 +88,14 @@ export default {
       const deleteRef = ref(storage, item);
       deleteObject(deleteRef)
         .then(() => {
-          alert("Deleted");
+          toast.update(
+            "imgDeletion",
+            {
+              content: `Image is now deleted`,
+              options: { type: "error", timeout: 2000 },
+            },
+            true
+          );
           delete this.$store.state.myImages[item];
           delete this.$store.state.gallery[item];
         })

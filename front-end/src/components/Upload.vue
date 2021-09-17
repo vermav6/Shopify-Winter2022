@@ -29,6 +29,8 @@
 <script>
 import { storage } from "@/firebase_config.js";
 import { uploadBytes, ref } from "firebase/storage";
+import { useToast } from "vue-toastification";
+const toast = useToast();
 
 export default {
   name: "Upload",
@@ -59,7 +61,14 @@ export default {
         };
         uploadBytes(storageRef, this.uploadedFile, metadata).then(() => {
           this.$router.push("/my");
-          alert("Uploaded a blob or file!");
+          toast.update(
+            "submitted",
+            {
+              content: "Image uploaded",
+              options: { type: "info", timeout: 2000 },
+            },
+            true
+          );
         });
       } else {
         alert("Please select a file to upload");
