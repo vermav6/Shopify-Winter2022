@@ -1,7 +1,8 @@
 <template>
-  <div>
+  <div style="justify-content: center">
     <form v-on:submit.prevent>
       <input
+        class="form-control inp1"
         type="file"
         id="myFile"
         accept="image/png, image/jpeg"
@@ -9,11 +10,17 @@
         name="filename"
       />
       <br />
-      <input v-model="imageName" placeholder="Enter Image Name" />
+      <input
+        v-model="imageName"
+        class="form-control inp2"
+        placeholder="Enter Image Name"
+      />
       <br />
-      <input @click="upload()" type="submit" />
-      <br />
-      <button @click="clear()" v-if="isFileSelected">Unselect Image</button>
+      <input @click="upload()" class="btn btn-info" type="submit" />
+      &nbsp;&nbsp;
+      <button @click="clear()" class="btn btn-danger" v-if="isFileSelected">
+        Unselect Image
+      </button>
     </form>
     <img :src="submittedFileLocalURL" style="height: 50vh" />
   </div>
@@ -50,12 +57,10 @@ export default {
             classification_status: 0,
           },
         };
-        uploadBytes(storageRef, this.uploadedFile, metadata).then(
-          (snapshot) => {
-            alert("Uploaded a blob or file!");
-            console.log(snapshot);
-          }
-        );
+        uploadBytes(storageRef, this.uploadedFile, metadata).then(() => {
+          this.$router.push("/my");
+          alert("Uploaded a blob or file!");
+        });
       } else {
         alert("Please select a file to upload");
       }
@@ -67,7 +72,6 @@ export default {
     handleFileChange(evt) {
       this.uploadedFile = evt.target.files[0];
       this.submittedFileLocalURL = URL.createObjectURL(evt.target.files[0]);
-      this.imageName = evt.target.files[0].name;
     },
   },
 };
@@ -88,5 +92,19 @@ li {
 }
 a {
   color: #42b983;
+}
+
+.inp1 {
+  margin: auto;
+  margin-top: 50px;
+  max-width: 50vw;
+}
+.inp2 {
+  margin: auto;
+  max-width: 30vw;
+}
+
+.inp3 {
+  margin: auto;
 }
 </style>

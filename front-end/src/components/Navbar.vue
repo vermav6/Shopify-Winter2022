@@ -42,12 +42,9 @@
           </li>
         </ul>
         <form class="d-flex" v-if="this.$store.state.loggedIn">
-          <input
-            class="form-control me-2"
-            type="search"
-            placeholder="Search Categories"
-            aria-label="Search"
-          />
+          <a style="color: black; margin-top: 3%; margin-right: 10px">
+            {{ this.$store.state.userData.email }}
+          </a>
           <button
             class="btn btn-outline-success"
             type="submit"

@@ -1,74 +1,63 @@
 <template>
-  <div>
-    <Login v-show="!this.$store.state.loggedIn" />
-    <button
-      class="btn btn-warning"
-      v-on:click="generateSampleImages()"
-      type="submit"
-      v-if="
-        !this.$store.state.randomGalleryState && !this.$store.state.loggedIn
-      "
-    >
-      View Random Gallery Logging In
-    </button>
-    <div
-      v-show="
-        this.$store.state.loggedIn || this.$store.state.randomGalleryState
-      "
-    >
-      <div class="modal" v-if="modalURL != null" v-on:click="modalURL = null">
-        <div class="modal-content">
-          <span class="close">&times;</span>
-          <img class="modalImg" v-lazy="modalURL" />
-        </div>
+  <div
+    v-show="this.$store.state.loggedIn || this.$store.state.randomGalleryState"
+  >
+    <div class="modal" v-if="modalURL != null" v-on:click="modalURL = null">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <img class="modalImg" v-lazy="modalURL" />
       </div>
+    </div>
+    <div
+      class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 mason"
+      v-if="Object.keys(this.$store.state.myImages).length != 0"
+    >
       <div
-        class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 mason"
-        v-if="Object.keys(this.$store.state.myImages).length != 0"
+        class="col"
+        v-for="item in Object.keys(this.$store.state.myImages)"
+        :key="item"
       >
-        <div
-          class="col"
-          v-for="item in Object.keys(this.$store.state.myImages)"
-          :key="item"
-        >
-          <div class="card h-100" v-on:click="openModal(item)">
-            <img
-              v-lazy="getImgDetails(item).img"
-              class="card-img-top cardImg"
-              alt="..."
-            />
-            <div class="card-body">
-              <h5 class="card-title">{{ getImgDetails(item).title }}</h5>
-              <span>
-                <span
-                  class="badge bg-success"
-                  style="margin-right: 5px"
-                  v-for="tag in getImgDetails(item).tags"
-                  v-bind:key="tag"
-                >
-                  {{ tag }}
-                </span>
+        <div class="card h-100">
+          <button
+            class="deleteButton btn btn-danger"
+            v-on:click="deleteImg(item)"
+          >
+            Delete
+          </button>
+          <img
+            v-lazy="getImgDetails(item).img"
+            class="card-img-top cardImg"
+            alt="..."
+            v-on:click="openModal(getImgDetails(item))"
+          />
+          <div class="card-body">
+            <h5 class="card-title">{{ getImgDetails(item).title }}</h5>
+            <span>
+              <span
+                class="badge bg-success"
+                style="margin-right: 5px"
+                v-for="tag in getImgDetails(item).tags"
+                v-bind:key="tag"
+              >
+                {{ tag }}
               </span>
-            </div>
-            <div class="card-footer">
-              <small class="text-muted">{{
-                getImgDetails(item).uploaded
-              }}</small>
-            </div>
+            </span>
+          </div>
+          <div class="card-footer">
+            <small class="text-muted">{{ getImgDetails(item).uploaded }}</small>
           </div>
         </div>
       </div>
-      <div v-else>Please upload an image to see it here</div>
     </div>
+    <div v-else>Please upload an image to see it here</div>
   </div>
 </template>
 
 <script>
-import Login from "@/components/Login";
-import { getMyImagesFromStorage } from "@/firebase_config.js";
+import { storage, getMyImagesFromStorage } from "@/firebase_config.js";
+import { ref, deleteObject } from "firebase/storage";
 
 export default {
-  components: { Login },
   data() {
     return {
       modalURL: null,
@@ -87,6 +76,19 @@ export default {
     }, 10000);
   },
   methods: {
+    deleteImg(item) {
+      const deleteRef = ref(storage, item);
+      deleteObject(deleteRef)
+        .then(() => {
+          alert("Deleted");
+          delete this.$store.state.myImages[item];
+          delete this.$store.state.gallery[item];
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+
     getImgDetails(item) {
       return this.$store.state.gallery[item];
     },
@@ -126,6 +128,13 @@ export default {
 };
 </script>
 <style scoped>
+.deleteButton {
+  position: absolute;
+  top: 3px;
+  right: 5px;
+  border-radius: 20px;
+}
+
 .card {
   background-color: rgb(251, 247, 237) !important;
   border-radius: 10px;
