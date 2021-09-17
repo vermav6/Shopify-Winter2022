@@ -1,6 +1,6 @@
 <template>
   <div style="justify-content: center">
-    <form v-on:submit.prevent>
+    <form>
       <input
         class="form-control inp1"
         type="file"
@@ -16,7 +16,7 @@
         placeholder="Enter Image Name"
       />
       <br />
-      <input @click="upload()" class="btn btn-info" type="submit" />
+      <button @click="upload()" class="btn btn-info">Upload</button>
       &nbsp;&nbsp;
       <button @click="clear()" class="btn btn-danger" v-if="isFileSelected">
         Unselect Image
@@ -47,7 +47,17 @@ export default {
     },
   },
   methods: {
+    validateForm() {
+      if (this.imageName == "") {
+        alert("Enter the image name before uploading");
+        return false;
+      }
+      return true;
+    },
     upload() {
+      if (!this.validateForm()) {
+        return;
+      }
       const storageRef = ref(
         storage,
         `${this.$store.state.userData.uid}/${Date.now().toString()}`
