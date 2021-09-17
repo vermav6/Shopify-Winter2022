@@ -1,7 +1,7 @@
 import Home from "@/components/Home.vue";
 import Upload from "@/components/Upload.vue";
 import My from "@/components/MyImages.vue";
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 // import {userDetails} from "@/firebase_config.js";
 import { store } from "../vuex";
 import { useToast } from "vue-toastification";
@@ -28,7 +28,7 @@ const routes = [
 ];
 
 export const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes,
 });
 
