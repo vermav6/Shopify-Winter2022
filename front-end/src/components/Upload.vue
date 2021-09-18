@@ -1,6 +1,6 @@
 <template>
   <div style="justify-content: center">
-    <form>
+    <form v-on:submit.prevent>
       <input
         class="form-control inp1"
         type="file"
@@ -16,7 +16,7 @@
         placeholder="Enter Image Name"
       />
       <br />
-      <button @click="upload()" class="btn btn-info">Upload</button>
+      <input @click="upload()" class="btn btn-info" type="submit" />
       &nbsp;&nbsp;
       <button @click="clear()" class="btn btn-danger" v-if="isFileSelected">
         Unselect Image
@@ -49,7 +49,14 @@ export default {
   methods: {
     validateForm() {
       if (this.imageName == "") {
-        alert("Enter the image name before uploading");
+        toast.update(
+          "uploadImg",
+          {
+            content: "Please enter an image name to upload",
+            options: { type: "error", timeout: 3500 },
+          },
+          true
+        );
         return false;
       }
       return true;
