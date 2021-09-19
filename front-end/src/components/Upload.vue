@@ -48,7 +48,16 @@ export default {
   },
   methods: {
     validateForm() {
-      if (this.imageName == "") {
+      if (!this.uploadedFile && this.imageName != "") {
+        toast.update(
+          "imageNotUploaded",
+          {
+            content: "Please chose an image first",
+            options: { type: "error", timeout: 3500 },
+          },
+          true
+        );
+      } else if (this.imageName == "") {
         toast.update(
           "uploadImg",
           {
@@ -87,8 +96,18 @@ export default {
             true
           );
         });
-      } else {
-        alert("Please select a file to upload");
+      } else if (
+        !(this.uploadedFile && this.submittedFileLocalURL) &&
+        this.imageName == ""
+      ) {
+        toast.update(
+          "noFileUploaded",
+          {
+            content: "Please chose an image to upload",
+            options: { type: "error", timeout: 3500 },
+          },
+          true
+        );
       }
     },
     clear() {
