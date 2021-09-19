@@ -1,7 +1,12 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light beige">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">ImagIn</a>
+      <a
+        class="navbar-brand"
+        href="#"
+        style="font-size: 30px; font-weight: 550; font-style: italic"
+        >imagin</a
+      >;
       <button
         class="navbar-toggler"
         type="button"

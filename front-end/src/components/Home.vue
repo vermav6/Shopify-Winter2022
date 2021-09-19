@@ -1,6 +1,7 @@
 <template>
   <div>
     <Login v-show="!this.$store.state.loggedIn" />
+    <br />
     <button
       class="btn btn-warning"
       v-on:click="generateSampleImages()"
@@ -9,7 +10,7 @@
         !this.$store.state.randomGalleryState && !this.$store.state.loggedIn
       "
     >
-      View Random Gallery Logging In
+      View random gallery without logging in
     </button>
     <div
       v-show="
