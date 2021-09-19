@@ -5,7 +5,7 @@
         class="navbar-brand"
         href="#"
         style="font-size: 30px; font-weight: 550; font-style: italic"
-        >imagin</a
+        >imagIn</a
       >;
       <button
         class="navbar-toggler"

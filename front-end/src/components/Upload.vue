@@ -5,6 +5,7 @@
         class="form-control inp1"
         type="file"
         id="myFile"
+        ref="myFile"
         accept="image/png, image/jpeg"
         @change="handleFileChange($event)"
         name="filename"
@@ -112,6 +113,8 @@ export default {
     },
     clear() {
       this.uploadedFile = null;
+      this.$refs.myFile.value = "";
+      this.imageName = null;
       this.submittedFileLocalURL = null;
     },
     handleFileChange(evt) {
