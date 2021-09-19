@@ -58,7 +58,7 @@ export default {
           },
           true
         );
-      } else if (this.imageName == "") {
+      } else if (this.uploadedFile && this.imageName == "") {
         toast.update(
           "uploadImg",
           {
@@ -114,7 +114,7 @@ export default {
     clear() {
       this.uploadedFile = null;
       this.$refs.myFile.value = "";
-      this.imageName = null;
+      this.imageName = "";
       this.submittedFileLocalURL = null;
     },
     handleFileChange(evt) {
