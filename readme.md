@@ -3,7 +3,7 @@
 
 Hi, this is a full stack application developed for Shopify's Backend Developer Intern - Winter 2022 role.
 
-Link to web application: < https://shopify-varun.netlify.app/ >
+Access the live demo here: [https://shopify-varun.netlify.app/](https://shopify-varun.netlify.app/)
 
 
 1. Front-End developed using Vue.js framework.
