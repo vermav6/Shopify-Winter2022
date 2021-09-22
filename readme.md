@@ -20,7 +20,10 @@ This application uses Firebase Storage as it's persistent data store and Firebas
 - The front end updates at every 10 seconds via optimized polling algorithms, which might sometimes render the classification tags at a delayed rate.
 ---
 
+### Data Flow Model:
+![Data Flow Diagram](Data_flow_Shopify_ImagIn.png)
 
+---
 ### What tech stack does it use?
 
   The back-end has been developed using Node.js framework and the JavaScript programming language. 
