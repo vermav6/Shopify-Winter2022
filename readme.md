@@ -70,8 +70,7 @@ Storage Structure:
 - Firebase Authentication is always free.
 - Firebase Storage offers relatively low cost storage solutions with a free tier.
 - Firebase Functions operate for free until a certain threshold.
-  
-https://firebase.google.com/pricing
+- https://firebase.google.com/pricing
 ---
 ### Running Locally:
 **Back-end**:
