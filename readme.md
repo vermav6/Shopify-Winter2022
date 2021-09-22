@@ -69,7 +69,22 @@ Storage Structure:
 - Firebase Functions operate for free until a certain threshold.
   
 https://firebase.google.com/pricing
-  
+---
+### Running Locally:
+**Back-end**:
+- Clone repository
+- ```cd back-end```
+- Configure firebase account : https://firebase.google.com/docs/functions/get-started
+- ```firebase emulators:start```
+
+**Front-end**:
+- Clone repository
+- ```cd front-end```
+- Install yarn
+- ```yarn```
+- To run in development mode: ```yarn serve```, to build for production: ```yarn build```
+- Upon yarn serve, running the application on localhost will connect to the local back-end automatically (Classification will fail due to image URL being locally hosted, however Clarifai Tests will run to ensure no build errors are propogated in production environments)  
+---
 ### What about Scaling and Security?
 - This service is highly scalable and should be able to support a large amount of images and concurrent classifications without huge performance impacts.
 - Some measures in place to maintain scalability are:
